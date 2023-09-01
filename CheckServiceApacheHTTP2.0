@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#Defino o nome do servico a ser verificado
+NOME_DO_SERVICO="httpd"
+
+#Defino o diretorio do httpd para onde eu quero q envie os resultados
+DIRETORIO_HTTPD="/home/ec2-user/LogsServices"
+
+#Defino o IP do HTTPD
+IP_HTTPD="3.225.130.221"
+
+#Faço a função onde irá verificar o serviço
+verificar_servico(){
+        if systemctl is-active $NOME_DO_SERVICO >/dev/null 2>&1; then
+                STATUS="Online"
+                MENSAGEM="O serviço HTTPD/APACHE está online e rodando"
+                ARQUIVO_RESULTADO_HTTPD="$DIRETORIO_HTTPD/resultado_servico_HTTPD_online.txt"
+        else
+                STATUS="Offline"
+                MENSAGEM="O serviço HTTPD/APACHE está offline, use o comando (systemctl enable/start httpd) para inicia lo"
+                ARQUIVO_RESULTADO_HTTPD="$DIRETORIO_HTTPD/resultado_servico_HTTPD_Offline.txt"
+        fi
+}
+
+#Obtenho a data e hora atual
+DATA_HORA=$(date +"%Y-%m-%d %H:%M:%S")
+
+#Chamo a função que irá verificar o serviço
+verificar_servico
+
+#Crio o Conteudo do arquivo de resultado
+CONTEUDO="$DATA_HORA - Serviço: $NOME_DO_SERVICO - Status: $STATUS - $MENSAGEM"
+
+#Escreve o conteudo no arquivo de resultado HTTPD/APACHE
+echo "$CONTEUDO" > "$ARQUIVO_RESULTADO_HTTPD"
+
+echo "Resultado da verificação do serviço foi salvo em: $ARQUIVO_RESULTADO_HTTPD"
