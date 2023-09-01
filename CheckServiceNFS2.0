@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#Defino o Nome do serviço a ser verificado
+NOME_DO_SERVICO="nfs-server"
+
+#Defino o Diretorio para onde será enviado os resultados
+DIRETORIO_NFS="/home/ec2-user/LogsServices"
+
+#Defino o IP o NFS
+IP_NFS="3.225.130.221"
+
+#Função onde irá verificar o serviço
+verificar_servico(){
+        if systemctl is-active $NOME_DO_SERVICO >/dev/null 2>&1; then
+                STATUS="Online"
+                MENSAGEM="Serviço está online e funcionando"
+                ARQUIVO_RESULTADO="$DIRETORIO_NFS/resultado_servico_online_NFS.text"
+        else
+                STATUS="Offline"
+                MENSAGEM="Serviço está offline, use o comando systemctl start/enable nfs-server para iniciá-lo"
+                ARQUIVO_RESULTADO="$DIRETORIO_NFS/resultado_servico_offile_NFS.text"
+        fi
+}
+
+#Obtenho a hora e data atual
+DATA_HORA=(date +"%Y-%m-%d %H:%M:%S")
+
+#Chamo a fução para ser rodada
+verificar_servico
+
+#Crio o conteudo no arquivo de resultado da função
+CONTEUDO="$DATA_HORA - Servico: $NOME_DO_SERVICO - Status: $STATUS $MENSAGEM"
+
+#Escrevo o conteudo no arquivo de resultado NFS
+echo "$CONTEUDO" > "$ARQUIVO_RESULTADO"
+
+echo "Resultado da verificação do serviço foi salvo em: $ARQUIVO_RESULTADO"
+~                                                                                                                                                                                                                                            ~                                                                                                                                                                                                                                            ~                                                                                                                                                                                                                                            ~                                                                                       
